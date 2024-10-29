@@ -1,0 +1,190 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdlib> // for system()
+
+using namespace std;
+
+void listFiles(const string& directory) {
+    string command = "ls -l " + directory;
+    system(command.c_str());
+}
+
+void createDirectory(const string& directory) {
+    string command = "mkdir -p " + directory; // -p to avoid error if it already exists
+    system(command.c_str());
+}
+
+void copyFile(const string& source, const string& destination) {
+    string command = "cp " + source + " " + destination;
+    system(command.c_str());
+}
+
+void moveFile(const string& source, const string& destination) {
+    string command = "mv " + source + " " + destination;
+    system(command.c_str());
+}
+
+void createFile(const string& filename, const string& content) {
+    ofstream file(filename);
+    if (file.is_open()) {
+        file << content;
+        file.close();
+        cout << "File created: " << filename << endl;
+    } else {
+        cout << "Error creating file: " << filename << endl;
+    }
+}
+
+void editFile(const string& filename, const string& newContent) {
+    ofstream file(filename);
+    if (file.is_open()) {
+        file << newContent;
+        file.close();
+        cout << "File edited: " << filename << endl;
+    } else {
+        cout << "Error editing file: " << filename << endl;
+    }
+}
+
+void insertIntoFile(const string& filename, const string& content) {
+    ofstream file(filename, ios::app); // Open in append mode
+    if (file.is_open()) {
+        file << content;
+        file.close();
+        cout << "Content inserted into: " << filename << endl;
+    } else {
+        cout << "Error inserting into file: " << filename << endl;
+    }
+}
+
+void playAudio(const string& filename) {
+    string command = "xdg-open " + filename; // Use xdg-open for Linux, adjust for other OS
+    system(command.c_str());
+    cout << "Playing audio: " << filename << endl;
+}
+
+void uploadFile(const string& source, const string& destination) {
+    string command = "cp " + source + " " + destination; // Copy file from source to destination
+    system(command.c_str());
+    cout << "File uploaded from " << source << " to " << destination << endl;
+}
+
+void renameFile(const string& oldName, const string& newName) {
+    string command = "mv " + oldName + " " + newName; // Rename the file
+    system(command.c_str());
+    cout << "File renamed from " << oldName << " to " << newName << endl;
+}
+
+int main() {
+    string directory, source, destination, filename, newFilename, content;
+    int choice;
+
+    while (true) {
+        cout << "Directory Navigation Program" << endl;
+        cout << "-----------------------------" << endl;
+        cout << "1. List files" << endl;
+        cout << "2. Create directory" << endl;
+        cout << "3. Copy file" << endl;
+        cout << "4. Move file" << endl;
+        cout << "5. Create file" << endl;
+        cout << "6. Edit file" << endl;
+        cout << "7. Insert into file" << endl;
+        cout << "8. Play audio file" << endl;
+        cout << "9. Upload file from disk" << endl;
+        cout << "10. Rename file" << endl; // New option for renaming a file
+        cout << "11. Quit" << endl;
+        cout << "Enter your choice: ";
+
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter directory: ";
+                cin >> directory;
+                listFiles(directory);
+                break;
+
+            case 2:
+                cout << "Enter directory name: ";
+                cin >> directory;
+                createDirectory(directory);
+                break;
+
+            case 3:
+                cout << "Enter source file: ";
+                cin >> source;
+                cout << "Enter destination file: ";
+                cin >> destination;
+                copyFile(source, destination);
+                break;
+
+            case 4:
+                cout << "Enter source file: ";
+                cin >> source;
+                cout << "Enter destination file: ";
+                cin >> destination;
+                moveFile(source, destination);
+                break;
+
+            case 5:
+                cout << "Enter filename: ";
+                cin >> filename;
+                cout << "Enter content for the file: ";
+                cin.ignore(); // Clear the newline character from the input buffer
+                getline(cin, content);
+                createFile(filename, content);
+                break;
+
+            case 6:
+                cout << "Enter filename to edit: ";
+                cin >> filename;
+                cout << "Enter new content for the file: ";
+                cin.ignore(); // Clear the newline character from the input buffer
+                getline(cin, content);
+                editFile(filename, content);
+                break;
+
+            case 7:
+                cout << "Enter filename to insert into: ";
+                cin >> filename;
+                cout << "Enter content to insert: ";
+                cin.ignore(); // Clear the newline character from the input buffer
+                getline(cin, content);
+                insertIntoFile(filename, content);
+                break;
+
+            case 8:
+                cout << "Enter audio file path to play: ";
+                cin >> filename;
+                playAudio(filename);
+                break;
+
+            case 9:
+                cout << "Enter file source path to upload (from disk): ";
+                cin >> source;
+                cout << "Enter destination directory: ";
+                cin >> destination;
+                uploadFile(source, destination);
+                break;
+
+            case 10:
+                cout << "Enter current filename: ";
+                cin >> filename;
+                cout << "Enter new filename: ";
+                cin >> newFilename;
+                renameFile(filename, newFilename);
+                break;
+
+            case 11:
+                cout << "Goodbye!" << endl;
+                return 0;
+
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+        }
+    }
+
+    return 0;
+}
